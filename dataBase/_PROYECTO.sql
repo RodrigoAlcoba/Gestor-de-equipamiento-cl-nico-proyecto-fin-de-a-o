@@ -1,0 +1,1272 @@
+----------------------------FUNCIONALIDADES----------------------------
+
+CREATE TABLE FUNCIONALIDADES(
+    ID_Funcionalidad INTEGER NOT NULL,
+    Tipo_Permiso VARCHAR(50) NOT NULL,
+    CONSTRAINT PK_Funcionalidad PRIMARY KEY(ID_Funcionalidad),
+    CONSTRAINT UK_Fun_Tipo_Permiso UNIQUE (Tipo_Permiso)
+)TABLESPACE USERS;
+
+-- SECUENCIA
+CREATE SEQUENCE FUNCIONALIDADES_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER FUNCIONALIDADES_ID_TRIGGER
+    BEFORE
+        INSERT ON FUNCIONALIDADES
+    FOR EACH ROW
+BEGIN
+    SELECT FUNCIONALIDADES_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Funcionalidad
+    FROM DUAL;
+END;
+
+----------------------------PERFILES----------------------------
+
+CREATE TABLE PERFILES(
+    ID_Perfil INTEGER NOT NULL,
+    Nom_Perfil VARCHAR(40) NOT NULL,
+    Estado VARCHAR(10) NOT NULL,
+    CONSTRAINT PK_Perfil PRIMARY KEY(ID_Perfil),
+    CONSTRAINT UK_Nom_Perfl UNIQUE(Nom_Perfil)
+)TABLESPACE USERS;
+
+--Check ESTADO
+ALTER TABLE PERFILES
+    ADD CONSTRAINT chk_perfil_estado
+        CHECK(UPPER(Estado) IN (UPPER('Activo'), UPPER('Eliminado')));
+
+--ALTER TABLE PERFILES DROP CONSTRAINT chk_perfil_nombre;
+
+-- SECUENCIA
+CREATE SEQUENCE PERFILES_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER PERFILES_ID_TRIGGER
+    BEFORE
+        INSERT ON PERFILES
+    FOR EACH ROW
+BEGIN
+    SELECT PERFILES_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Perfil
+    FROM DUAL;
+END;
+
+----------------------------INSTITUCIONES----------------------------
+
+CREATE TABLE INSTITUCIONES(
+    ID_Institucion INTEGER NOT NULL,
+    Nom_Institucion VARCHAR(60) NOT NULL,
+    Estado VARCHAR(10) NOT NULL,
+    CONSTRAINT PK_Institucion PRIMARY KEY(ID_Institucion),
+    CONSTRAINT UK_Institucion_Nom UNIQUE(Nom_Institucion)
+)TABLESPACE USERS;
+
+--Check ESTADO
+ALTER TABLE INSTITUCIONES
+    ADD CONSTRAINT chk_institucion_estado
+        CHECK(UPPER(Estado) IN (UPPER('Activo'), UPPER('Eliminado')));
+
+-- SECUENCIA
+CREATE SEQUENCE INSTITUCIONES_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER INSTITUCIONES_ID_TRIGGER
+    BEFORE
+        INSERT ON INSTITUCIONES
+    FOR EACH ROW
+BEGIN
+    SELECT INSTITUCIONES_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Institucion
+    FROM DUAL;
+END;
+
+----------------------------USUARIOS----------------------------
+
+CREATE TABLE USUARIOS(
+    ID_Usuario INTEGER NOT NULL,
+    ID_Perfil INTEGER NOT NULL ,
+    ID_Institucion  NOT NULL,
+    Cedula VARCHAR(9) NOT NULL,
+    Nombre VARCHAR(20) NOT NULL, 
+    Nombre2 VARCHAR(20), 
+    Apellido VARCHAR(21) NOT NULL, 
+    Apellido2 VARCHAR(21) NOT NULL,
+    Nom_Usuario VARCHAR(51) NOT NULL,
+    Fec_Nac DATE NOT NULL, 
+    Email VARCHAR(50) NOT NULL, 
+    Contrasenia VARCHAR(50) NOT NULL,
+    Estado VARCHAR(10),
+    CONSTRAINT PK_Usuario PRIMARY KEY(ID_Usuario),
+    CONSTRAINT UK_Usuario_CI UNIQUE(Cedula),
+    CONSTRAINT UK_Usuario_Email UNIQUE(Email),
+    CONSTRAINT FK_Usuario_Perfil FOREIGN KEY(ID_Perfil) REFERENCES PERFILES(ID_Perfil),
+    CONSTRAINT FK_Usuario_Institucion FOREIGN KEY(ID_Institucion) REFERENCES INSTITUCIONES(ID_Institucion)
+) TABLESPACE USERS;
+
+ALTER TABLE USUARIOS
+    MODIFY Estado VARCHAR(12);
+
+--Check ESTADO
+ALTER TABLE USUARIOS
+    ADD CONSTRAINT chk_usuario_estado
+        CHECK(UPPER(Estado) IN (UPPER('SinValidar'), UPPER('Activo'), UPPER('Eliminado')));
+
+
+-- SECUENCIA
+CREATE SEQUENCE USUARIOS_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER USUARIOS_ID_TRIGGER
+BEFORE
+INSERT ON USUARIOS
+FOR EACH ROW
+BEGIN
+SELECT USUARIOS_ID_SEQ.NEXTVAL
+INTO :NEW.ID_Usuario
+FROM DUAL;
+END;
+
+----------------------------TELEFONOS USUARIOS----------------------------
+
+CREATE TABLE TELEFONOS_USUARIOS(
+    Telefono VARCHAR(20) NOT NULL,
+    ID_Usuario INTEGER NOT NULL,
+    CONSTRAINT PK_Tel PRIMARY KEY(Telefono, ID_Usuario),
+    CONSTRAINT UK_Tel_Usuario UNIQUE(Telefono),
+    CONSTRAINT FK_Tel_Usuario FOREIGN KEY(ID_Usuario) REFERENCES USUARIOS(ID_Usuario)
+)TABLESPACE USERS;
+
+----------------------------OPERACIONES----------------------------
+
+CREATE TABLE OPERACIONES(
+    ID_Operacion INTEGER NOT NULL,
+    Nom_Operacion VARCHAR(50) NOT NULL, 
+    CONSTRAINT PK_Operacion PRIMARY KEY(ID_Operacion),
+    CONSTRAINT UK_Operacion_Nom_Oper UNIQUE(Nom_Operacion)
+)TABLESPACE USERS;
+
+-- SECUENCIA
+CREATE SEQUENCE OPERACIONES_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER OPERACIONES_ID_TRIGGER
+    BEFORE
+        INSERT ON OPERACIONES
+    FOR EACH ROW
+BEGIN
+    SELECT OPERACIONES_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Operacion
+    FROM DUAL;
+END;
+----------------------------AUDITORIA----------------------------
+CREATE TABLE AUDITORIAS(
+    ID_Auditoria INTEGER    NOT NULL,
+    ID_Usuario   INTEGER    NOT NULL,
+    ID_Operacion INTEGER    NOT NULL,
+    Cedula       VARCHAR(9) NOT NULL,
+    Fecha       DATE NOT NULL,
+    CONSTRAINT PK_Auditoria PRIMARY KEY (ID_Auditoria),
+    CONSTRAINT UK_Auditoria_Cedula UNIQUE (Cedula),
+    CONSTRAINT FK_Auditoria_Usuario FOREIGN KEY (ID_Usuario) REFERENCES USUARIOS (ID_Usuario),
+    CONSTRAINT FK_Auditoria_Operacion FOREIGN KEY (ID_Operacion) REFERENCES OPERACIONES (ID_Operacion)
+)TABLESPACE USERS;
+-- SECUENCIA
+
+CREATE SEQUENCE AUDITORIAS_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+-- TRIGGER
+CREATE OR REPLACE TRIGGER AUDITORIAS_ID_TRIGGER
+    BEFORE
+        INSERT ON AUDITORIAS
+    FOR EACH ROW
+BEGIN
+    SELECT AUDITORIAS_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Auditoria
+    FROM DUAL;
+END;
+
+----------------------------SECTOR----------------------------
+CREATE TABLE SECTORES(
+    ID_Sector INTEGER NOT NULL,
+    Nombre VARCHAR(50) NOT NULL,
+    CONSTRAINT PK_Sector PRIMARY KEY(ID_Sector),
+    CONSTRAINT UK_Sector_Nombre UNIQUE(Nombre)
+)TABLESPACE USERS;
+
+ALTER TABLE SECTORES
+    ADD CONSTRAINT chk_nombre_sector
+        CHECK(UPPER(Nombre) IN (UPPER('Policlinico'), UPPER('Internacion'), UPPER('Emergencia'), UPPER('CTI'), UPPER('Otro')));
+
+
+
+CREATE SEQUENCE SECTORES_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER SECTORES_ID_TRIGGER
+    BEFORE
+        INSERT ON SECTORES
+    FOR EACH ROW
+BEGIN
+    SELECT SECTORES_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Sector
+    FROM DUAL;
+END;
+
+
+
+----------------------------UBICACIONES----------------------------
+
+CREATE TABLE UBICACIONES(
+    ID_Ubicacion INTEGER NOT NULL,
+    ID_Institucion INTEGER NOT NULL,
+    ID_Sector INTEGER NOT NULL,
+    Nom_Ubicacion VARCHAR(80) NOT NULL,
+    Numero INTEGER NOT NULL,
+    Piso VARCHAR(50) NOT NULL,
+    Cama INTEGER,
+    CONSTRAINT PK_Ubicacion PRIMARY KEY(ID_Ubicacion),
+    CONSTRAINT UK_Ubicacion_Nom UNIQUE(Nom_Ubicacion),
+    CONSTRAINT FK_Ubicacion_Sector FOREIGN KEY(ID_Sector) REFERENCES SECTORES(ID_Sector),
+    CONSTRAINT FK_Ubicacion_Institucion FOREIGN KEY (ID_Institucion)  REFERENCES INSTITUCIONES(ID_Institucion)
+)TABLESPACE USERS;
+
+
+
+-- SECUENCIA
+CREATE SEQUENCE Ubicaciones_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER UBICACIONES_ID_TRIGGER
+    BEFORE
+        INSERT ON UBICACIONES
+    FOR EACH ROW
+BEGIN
+    SELECT UBICACIONES_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Ubicacion
+    FROM DUAL;
+END;
+
+----------------------------PAISES----------------------------
+
+CREATE TABLE PAISES(
+    ID_Pais INTEGER NOT NULL,
+    Nom_Pais VARCHAR(50) NOT NULL,
+    Estado VARCHAR(10) NOT NULL,
+    CONSTRAINT PK_Pais PRIMARY KEY(ID_Pais),
+    CONSTRAINT UK_Pais_Nom UNIQUE(Nom_Pais)
+)TABLESPACE USERS;
+
+--Check ESTADO
+ALTER TABLE PAISES
+    ADD CONSTRAINT chk_pais_estado
+        CHECK(UPPER(Estado) IN (UPPER('Activo'), UPPER('Eliminado')));
+
+-- SECUENCIA
+CREATE SEQUENCE PAISES_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER PAISES_ID_TRIGGER
+    BEFORE
+        INSERT ON PAISES
+    FOR EACH ROW
+BEGIN
+    SELECT PAISES_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Pais
+    FROM DUAL;
+END;
+
+----------------------------TIPO_EQUIPO----------------------------
+
+CREATE TABLE TIPO_EQUIPO(
+    ID_Tipo_Equipo INTEGER NOT NULL,
+    Nom_Tipo VARCHAR(50) NOT NULL,
+    Estado VARCHAR(10) NOT NULL,
+    CONSTRAINT PK_Tipo_Equipo PRIMARY KEY(ID_Tipo_Equipo),
+    CONSTRAINT UK_Tipo_Equipo_Nom UNIQUE(Nom_Tipo)
+)TABLESPACE USERS;
+
+--Check ESTADO
+ALTER TABLE TIPO_EQUIPO
+    ADD CONSTRAINT chk_tipo_equipo_estado
+        CHECK(UPPER(Estado) IN (UPPER('Activo'), UPPER('Eliminado')));
+
+-- SECUENCIA
+CREATE SEQUENCE TIPOS_EQUIPO_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER TIPOS_EQUIPO_ID_TRIGGER
+    BEFORE
+        INSERT ON TIPO_EQUIPO
+    FOR EACH ROW
+BEGIN
+    SELECT TIPOS_EQUIPO_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Tipo_Equipo
+    FROM DUAL;
+END;
+
+----------------------------PROVEEDORES----------------------------
+
+CREATE TABLE PROVEEDORES(
+    ID_Proveedor INTEGER NOT NULL, 
+    Nom_Proveedor VARCHAR(50) NOT NULL,
+    Email VARCHAR(50) NOT NULL,
+    Estado VARCHAR(10) NOT NULL,
+    Sitio VARCHAR(80) NOT NULL,
+    CONSTRAINT PK_Proveedor PRIMARY KEY(ID_Proveedor),
+    CONSTRAINT UK_Proveedor_Nom UNIQUE(Nom_Proveedor)
+)TABLESPACE USERS;
+
+--Check ESTADO
+ALTER TABLE PROVEEDORES
+    ADD CONSTRAINT chk_proveedor_estado
+        CHECK(UPPER(Estado) IN (UPPER('Activo'), UPPER('Eliminado')));
+
+-- SECUENCIA
+CREATE SEQUENCE PROVEEDORES_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER PROVEEDORES_ID_TRIGGER
+    BEFORE
+        INSERT ON PROVEEDORES
+    FOR EACH ROW
+BEGIN
+    SELECT PROVEEDORES_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Proveedor
+    FROM DUAL;
+END;
+
+----------------------------MARCAS----------------------------
+
+CREATE TABLE MARCAS(
+    ID_Marca INTEGER NOT NULL,
+    Nom_Marca VARCHAR(50) NOT NULL,
+    Estado VARCHAR(10) NOT NULL,
+    CONSTRAINT PK_Marca PRIMARY KEY(ID_Marca),
+    CONSTRAINT UK_Marca_Nom UNIQUE(Nom_Marca)
+)TABLESPACE USERS;
+
+--Check ESTADO
+ALTER TABLE MARCAS
+    ADD CONSTRAINT chk_marca_estado
+        CHECK(UPPER(Estado) IN (UPPER('Activo'), UPPER('Eliminado')));
+
+CREATE SEQUENCE MARCAS_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER MARCAS_ID_TRIGGER
+    BEFORE
+        INSERT ON MARCAS
+    FOR EACH ROW
+BEGIN
+    SELECT MARCAS_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Marca
+    FROM DUAL;
+END;
+
+----------------------------MODELOS----------------------------
+CREATE TABLE MODELOS(
+    ID_Modelo INTEGER NOT NULL,
+    ID_Marca INTEGER, 
+    Nom_Modelo VARCHAR(50) NOT NULL,
+    Estado VARCHAR(10) NOT NUll,
+    CONSTRAINT PK_Modelo PRIMARY KEY(ID_Modelo),
+    CONSTRAINT UK_Modelo_Nom_Modelo UNIQUE(Nom_Modelo),
+    CONSTRAINT FK_Modelo_Marca FOREIGN KEY(ID_Marca) REFERENCES MARCAS(ID_Marca)
+)TABLESPACE USERS;
+
+--Check ESTADO
+ALTER TABLE MODELOS
+    ADD CONSTRAINT chk_modelo_estado
+        CHECK(UPPER(Estado) IN (UPPER('Activo'), UPPER('Eliminado')));
+
+-- SECUENCIA
+CREATE SEQUENCE MODELOS_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER MODELOS_ID_TRIGGER
+    BEFORE
+        INSERT ON MODELOS
+    FOR EACH ROW
+BEGIN
+    SELECT MODELOS_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_MODELO
+    FROM DUAL;
+END;
+
+
+
+----------------------------EQUIPOS----------------------------
+
+CREATE TABLE EQUIPOS(
+                        ID_Equipo INTEGER NOT NULL,
+                        ID_Pais INTEGER NOT NULL ,
+                        ID_Tipo_Equipo INTEGER NOT NULL ,
+                        ID_Proveedor INTEGER NOT NULL ,
+                        ID_Modelo INTEGER NOT NULL ,
+                        Ide_Interna INTEGER NOT NULL ,
+                        Nom_Equipo VARCHAR(80) NOT NULL,
+                        Num_Serie INTEGER NOT NULL,
+                        Fec_Adquisicion DATE NOT NULL,
+                        Imagen BLOB NOT NULL,
+                        Garantia DATE NOT NULL,
+                        Estado VARCHAR(10) NOT NULL,
+                        CONSTRAINT PK_Equipo PRIMARY KEY(ID_Equipo),
+                        CONSTRAINT UK_Equipos_Ide UNIQUE(Ide_Interna),
+                        CONSTRAINT FK_Equipo_Pais FOREIGN KEY(ID_Pais) REFERENCES PAISES(ID_Pais),
+                        CONSTRAINT FK_Equipo_Tipo FOREIGN KEY(ID_Tipo_Equipo) REFERENCES TIPO_EQUIPO(ID_Tipo_Equipo),
+                        CONSTRAINT FK_Equipo_Proveedor FOREIGN KEY(ID_Proveedor) REFERENCES PROVEEDORES(ID_Proveedor),
+                        CONSTRAINT FK_Equipo_Modelo FOREIGN KEY(ID_Modelo) REFERENCES MODELOS(ID_Modelo)
+)TABLESPACE USERS;
+
+--Check ESTADO
+ALTER TABLE EQUIPOS
+    ADD CONSTRAINT chk_equipo_estado
+        CHECK(UPPER(Estado) IN (UPPER('Activo'), UPPER('Eliminado')));
+
+-- SECUENCIA
+CREATE SEQUENCE EQUIPOS_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER EQUIPOS_ID_TRIGGER
+    BEFORE
+        INSERT ON EQUIPOS
+    FOR EACH ROW
+BEGIN
+    SELECT EQUIPOS_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Equipo
+    FROM DUAL;
+END;
+-------------------------------------MOV_EQUIPO-------------------------------------
+
+CREATE TABLE MOV_EQUIPO (
+        ID_Mov_Equipo INTEGER NOT NULL,
+        ID_Ubicacion INTEGER NOT NULL,
+        ID_Usuario INTEGER NOT NULL,
+        ID_Equipo INTEGER NOT NULL,
+        Fec_Entrada DATE NOT NULL,
+        Fec_Salida DATE,
+        Observaciones VARCHAR(150),
+        CONSTRAINT PK_MovEquipo PRIMARY KEY (ID_Mov_Equipo),
+        CONSTRAINT FK_Mov_Equipo_Equipo FOREIGN KEY (ID_Equipo) REFERENCES EQUIPOS(ID_Equipo),
+        CONSTRAINT FK_MovEquipo_Ubicacion FOREIGN KEY (ID_Ubicacion) REFERENCES UBICACIONES(ID_Ubicacion),
+        CONSTRAINT FK_MovEquipo_Usuario FOREIGN KEY (ID_Usuario) REFERENCES USUARIOS(ID_Usuario)
+) TABLESPACE USERS;
+
+-- SECUENCIA
+CREATE SEQUENCE MOV_EQUIPO_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER MOV_EQUIPOS_TRIGGER
+    BEFORE
+        INSERT ON MOV_EQUIPO
+    FOR EACH ROW
+BEGIN
+    SELECT MOV_EQUIPO_SEQ.NEXTVAL
+    INTO :NEW.ID_Mov_Equipo
+    FROM DUAL;
+END;
+
+
+----------------------------TIPO_INTERVENCION----------------------------
+
+CREATE TABLE TIPO_INTERVENCION(
+    ID_Tipo_Intervencion INTEGER NOT NULL,
+    Nom_Tipo VARCHAR(50) NOT NULL,
+    CONSTRAINT PK_Tipo_Intervencion PRIMARY KEY(ID_Tipo_Intervencion),
+    CONSTRAINT UK_Tipo_Nom_Tipo UNIQUE (Nom_Tipo)
+)TABLESPACE USERS;
+
+-- ALTER TABLE TIPO_INTERVENCION
+-- ADD CONSTRAINT chk_intervencion_tipo
+-- CHECK(UPPER(Nom_Tipo) IN (UPPER('Prevencion'), UPPER('Falla'), UPPER('Resolucion')));
+
+ALTER TABLE TIPO_INTERVENCION
+    ADD Estado VARCHAR(10) NOT NULL;
+
+
+-- SECUENCIA
+CREATE SEQUENCE TIPO_INTERVENCIONES_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER TIPO_INTERVENCIONES_ID_TRIGGER
+    BEFORE
+        INSERT ON TIPO_INTERVENCION
+    FOR EACH ROW
+BEGIN
+    SELECT TIPO_INTERVENCIONES_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Tipo_Intervencion
+    FROM DUAL;
+END;
+
+----------------------------INTERVENCIONES----------------------------
+
+CREATE TABLE INTERVENCIONES(
+    ID_Intervencion INTEGER NOT NULL,
+    ID_Usuario INTEGER NOT NULL,
+    ID_Equipo INTEGER NOT NULL,
+    ID_Tipo_Intervencion INTEGER NOT NULL,
+    Motivo VARCHAR(50),
+    Comentario VARCHAR(200),
+    Fecha_Hora DATE NOT NULL,
+    CONSTRAINT PK_Intervencion PRIMARY KEY(ID_Intervencion),
+    CONSTRAINT FK_Intervencion_Equipo FOREIGN KEY(ID_Equipo)
+        REFERENCES EQUIPOS(ID_Equipo),
+    CONSTRAINT FK_Intervencion_Usuario FOREIGN KEY(ID_Usuario)
+        REFERENCES USUARIOS(ID_Usuario),
+    CONSTRAINT FK_Tipo_Intervencion FOREIGN KEY(ID_Tipo_Intervencion)
+        REFERENCES TIPO_INTERVENCION(ID_Tipo_Intervencion),
+    CONSTRAINT UK_Intervencion_Usuario_Equipo_Fecha
+        UNIQUE(ID_Usuario, ID_Equipo, Fecha_Hora)
+)TABLESPACE USERS;
+
+-- SECUENCIA
+CREATE SEQUENCE INTERVENCIONES_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER INTERVENCIONES_ID_TRIGGER
+    BEFORE
+        INSERT ON INTERVENCIONES
+    FOR EACH ROW
+BEGIN
+    SELECT INTERVENCIONES_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Intervencion
+    FROM DUAL;
+END;
+
+CREATE TABLE SEGUIMIENTO_INTERVENCION (
+      ID_Seguimiento_Intervencion INTEGER NOT NULL,
+      ID_Intervencion INTEGER NOT NULL,
+      ID_Tipo_Intervencion INTEGER NOT NULL,
+      Motivo VARCHAR(50),
+      Observaciones VARCHAR(200),
+      Fecha_Hora DATE NOT NULL,
+      PRIMARY KEY (ID_Seguimiento_Intervencion),
+      FOREIGN KEY (ID_Intervencion) REFERENCES INTERVENCIONES (ID_Intervencion),
+      FOREIGN KEY (ID_Tipo_Intervencion) REFERENCES TIPO_INTERVENCION (ID_Tipo_Intervencion),
+      CONSTRAINT UK_Seguimiento_Tipo_Intervencion_Fecha UNIQUE (ID_Intervencion, ID_Tipo_Intervencion, Fecha_Hora)
+) TABLESPACE USERS;
+
+-- SECUENCIA
+CREATE SEQUENCE SEGUIMIENTO_INTERVENCION_ID_SEQ
+    MINVALUE 1
+    MAXVALUE 9999999999999999999999999999
+    INCREMENT BY 1
+    START WITH 1
+    CACHE 20
+    NOORDER
+    NOCYCLE
+    NOKEEP
+    NOSCALE;
+
+-- TRIGGER
+CREATE OR REPLACE TRIGGER SEGUIMIENTO_INTERVENCION_TRIGGER
+    BEFORE
+        INSERT ON SEGUIMIENTO_INTERVENCION
+    FOR EACH ROW
+BEGIN
+    SELECT SEGUIMIENTO_INTERVENCION_ID_SEQ.NEXTVAL
+    INTO :NEW.ID_Seguimiento_Intervencion
+    FROM DUAL;
+END;
+----------------------------TELEFONOS PROVEEDOR----------------------------
+CREATE TABLE TELEFONOS_PROVEEDOR(
+    Telefono VARCHAR(20) NOT NULL,
+    ID_Proveedor INTEGER NOT NULL,
+    CONSTRAINT PK_Tel_Prove PRIMARY KEY (Telefono, ID_Proveedor),
+    CONSTRAINT UK_Tel_Proveedor UNIQUE(Telefono),
+    CONSTRAINT FK_Tel_Proveedor FOREIGN KEY(ID_Proveedor) REFERENCES PROVEEDORES(ID_Proveedor)
+)TABLESPACE USERS;
+
+----------------------------BAJA_USUARIO_EQUIPO----------------------------
+
+CREATE TABLE BAJA_USUARIO_EQUIPO(
+    ID_Usuario INTEGER NOT NULL,
+    ID_Equipo INTEGER NOT NULL,
+    Fec_Baja DATE NOT NULL,
+    Razon VARCHAR(80) NOT NULL,
+    Comentario VARCHAR(200) NOT NULL,
+    CONSTRAINT PK_Baja_UE PRIMARY KEY(ID_Equipo, ID_Usuario, Fec_Baja),
+    CONSTRAINT FK_Baja_Usuario FOREIGN KEY(ID_Usuario) REFERENCES USUARIOS(ID_Usuario),
+    CONSTRAINT FK_Baja_Equipo FOREIGN KEY(ID_Equipo) REFERENCES EQUIPOS(ID_Equipo)
+)TABLESPACE USERS;
+
+----------------------------BAJA_USUARIO_UBICACION----------------------------
+
+CREATE TABLE BAJA_USUARIO_UBICACION(
+    ID_Usuario INTEGER NOT NULL,
+    ID_Ubicacion INTEGER NOT NULL,
+    Fec_Baja DATE NOT NULL,
+    Razon VARCHAR(80) NOT NULL,
+    Comentario VARCHAR(200) NOT NULL,
+    CONSTRAINT PK_Baja_U PRIMARY KEY(ID_Usuario, ID_Ubicacion, Fec_Baja),
+    CONSTRAINT FK_Baja_Usuario_U FOREIGN KEY(ID_Usuario)
+        REFERENCES USUARIOS(ID_Usuario),
+    CONSTRAINT FK_Baja_Ubicacion_U FOREIGN KEY(ID_Ubicacion)
+        REFERENCES UBICACIONES(ID_Ubicacion)
+)TABLESPACE USERS;
+
+----------------------------PERFIL_PERMISO_FUNCIONALIDAD----------------------------
+
+CREATE TABLE PERFIL_FUNCIONALIDAD (
+      Id_Funcionalidad INTEGER NOT NULL,
+      Id_Perfil INTEGER NOT NULL,
+      CONSTRAINT FK_FUNCIONALIDAD FOREIGN KEY(Id_Funcionalidad)
+          REFERENCES FUNCIONALIDADES(Id_Funcionalidad),
+      CONSTRAINT FK_PERFIL FOREIGN KEY(Id_Perfil)
+          REFERENCES PERFILES(Id_Perfil)
+) TABLESPACE USERS;
+
+--********************************************************************************************
+-----------------------------------------INSERTS----------------------------------------------
+--********************************************************************************************
+
+--CREACION DE REGISTROS -------------------------------
+--Funcionalidades---------------------------------------
+INSERT INTO FUNCIONALIDADES (TIPO_PERMISO) VALUES ('CRUD usuario');
+INSERT INTO FUNCIONALIDADES (TIPO_PERMISO) VALUES ('Login');
+INSERT INTO FUNCIONALIDADES (TIPO_PERMISO) VALUES ('CRUD perfiles');
+INSERT INTO FUNCIONALIDADES (TIPO_PERMISO) VALUES ('Gestion de intervenciones');
+INSERT INTO FUNCIONALIDADES (TIPO_PERMISO) VALUES ('Gestion de equipos');
+INSERT INTO FUNCIONALIDADES (TIPO_PERMISO) VALUES ('Gestion de ubicaciones');
+INSERT INTO FUNCIONALIDADES (TIPO_PERMISO) VALUES ('Gestion de tipo de intervenciones');
+
+--Instituciones--------------------------------------------------
+INSERT INTO INSTITUCIONES (NOM_INSTITUCION, ESTADO) VALUES ('Centro Hospitalario Norte', 'ACTIVO');
+INSERT INTO INSTITUCIONES (NOM_INSTITUCION, ESTADO) VALUES ('Centro Hospitalario Rural', 'ACTIVO');
+INSERT INTO INSTITUCIONES (NOM_INSTITUCION, ESTADO) VALUES ('Hospital Metropolitano', 'ACTIVO');
+INSERT INTO INSTITUCIONES (NOM_INSTITUCION, ESTADO) VALUES ('Hospital Central', 'ELIMINADO');
+
+--Perfiles-------------------------------------------------------
+
+INSERT INTO PERFILES(NOM_PERFIL, ESTADO) VALUES('AUXILIAR ADMINISTRATIVO','ACTIVO');
+INSERT INTO PERFILES(NOM_PERFIL, ESTADO) VALUES('INGENIERO BIOMEDICO','ACTIVO');
+INSERT INTO PERFILES(NOM_PERFIL, ESTADO) VALUES('TECNOLOGO','ACTIVO');
+INSERT INTO PERFILES(NOM_PERFIL, ESTADO) VALUES('TECNICO','ACTIVO');
+INSERT INTO PERFILES(NOM_PERFIL, ESTADO) VALUES('ADMINISTRADOR','ACTIVO');
+
+--Relacion funcioalidad-perfiles--------------------------------
+
+--AUXILIAR ADMIN
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'CRUD usuario'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'AUXILIAR ADMINISTRATIVO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Login'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'AUXILIAR ADMINISTRATIVO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'CRUD perfiles'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'AUXILIAR ADMINISTRATIVO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de intervenciones'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'AUXILIAR ADMINISTRATIVO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de equipos'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'AUXILIAR ADMINISTRATIVO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de ubicaciones'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'AUXILIAR ADMINISTRATIVO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de tipo de intervenciones'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'AUXILIAR ADMINISTRATIVO'));
+
+--BIOMEDICO
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Login'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'INGENIERO BIOMEDICO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de intervenciones'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'INGENIERO BIOMEDICO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de equipos'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'INGENIERO BIOMEDICO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de ubicaciones'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'INGENIERO BIOMEDICO'));
+
+--TECNOLOGO
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Login'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'TECNOLOGO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de intervenciones'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'TECNOLOGO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de equipos'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'TECNOLOGO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de ubicaciones'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'TECNOLOGO'));
+
+--TECNICO
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Login'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'TECNICO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de intervenciones'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'TECNICO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de equipos'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'TECNICO'));
+
+INSERT INTO PERFIL_FUNCIONALIDAD(ID_FUNCIONALIDAD, ID_PERFIL) VALUES
+    ((SELECT ID_FUNCIONALIDAD FROM FUNCIONALIDADES WHERE Tipo_Permiso = 'Gestion de ubicaciones'), (SELECT ID_PERFIL FROM PERFILES WHERE Nom_Perfil = 'TECNICO'));
+
+------------PAISES----------------------
+
+INSERT INTO PAISES(NOM_PAIS, ESTADO) VALUES ('Uruguay', 'ACTIVO');
+INSERT INTO PAISES(NOM_PAIS, ESTADO) VALUES ('Argentina', 'ACTIVO');
+INSERT INTO PAISES(NOM_PAIS, ESTADO) VALUES ('Brasil', 'ACTIVO');
+INSERT INTO PAISES(NOM_PAIS, ESTADO) VALUES ('Bolivia', 'ACTIVO');
+INSERT INTO PAISES(NOM_PAIS, ESTADO) VALUES ('Chile', 'ACTIVO');
+INSERT INTO PAISES(NOM_PAIS, ESTADO) VALUES ('Colombia', 'ACTIVO');
+INSERT INTO PAISES(NOM_PAIS, ESTADO) VALUES ('Peru', 'ACTIVO');
+
+------------TIPO-EQUIPO
+
+INSERT INTO TIPO_EQUIPO (NOM_TIPO, ESTADO) VALUES ('DIAGNOSTICO', 'ACTIVO');
+INSERT INTO TIPO_EQUIPO (NOM_TIPO, ESTADO) VALUES ('SOPORTE VITAL', 'ACTIVO');
+INSERT INTO TIPO_EQUIPO (NOM_TIPO, ESTADO) VALUES ('QUIRURGICOS' , 'ACTIVO');
+INSERT INTO TIPO_EQUIPO (NOM_TIPO, ESTADO) VALUES ('LABORATORIO' , 'ACTIVO');
+
+
+------------SECTORES
+INSERT INTO SECTORES (NOMBRE) VALUES (UPPER('Policlinico'));
+INSERT INTO SECTORES (NOMBRE) VALUES (UPPER('Internacion'));
+INSERT INTO SECTORES (NOMBRE) VALUES (UPPER('Emergencia'));
+INSERT INTO SECTORES (NOMBRE) VALUES (UPPER('CTI'));
+INSERT INTO SECTORES (NOMBRE) VALUES (UPPER('Otro'));
+
+------------TIPO_INTERVENCION
+INSERT INTO TIPO_INTERVENCION (NOM_TIPO, ESTADO) VALUES (UPPER('Prevencion'), 'ACTIVO');
+INSERT INTO TIPO_INTERVENCION (NOM_TIPO, ESTADO) VALUES (UPPER('Falla'), 'ACTIVO');
+INSERT INTO TIPO_INTERVENCION (NOM_TIPO, ESTADO) VALUES (UPPER('Resolucion'), 'ACTIVO');
+
+------------USUARIOS
+--ADMIN
+INSERT INTO USUARIOS (
+      ID_PERFIL,
+      ID_INSTITUCION,
+      CEDULA,
+      NOMBRE,
+      NOMBRE2,
+      APELLIDO,
+      APELLIDO2,
+      NOM_USUARIO,
+      FEC_NAC,
+      EMAIL,
+      CONTRASENIA,
+      ESTADO
+      )
+VALUES (
+        (SELECT PERFILES.ID_Perfil FROM PERFILES WHERE Nom_Perfil = 'AUXILIAR ADMINISTRATIVO'),
+        (SELECT INSTITUCIONES.ID_Institucion FROM INSTITUCIONES WHERE Nom_Institucion = 'Centro Hospitalario Norte'),
+        '4234567-8',
+        'Administrador',
+        'Adminitrador',
+        'Admin',
+        'Admin',
+        'admin.admin',
+        TO_DATE('2002-11-20', 'YYYY-MM-DD'),
+        'admin@gmail.com',
+        'Admin123!',
+        'ACTIVO'
+       );
+INSERT INTO TELEFONOS_USUARIOS(Telefono, ID_Usuario)
+VALUES (
+        '333666555',
+        (SELECT ID_USUARIO FROM USUARIOS WHERE Email = 'admin@gmail.com')
+       );
+INSERT INTO TELEFONOS_USUARIOS(Telefono, ID_Usuario)
+VALUES (
+           '444666555',
+           (SELECT ID_USUARIO FROM USUARIOS WHERE Email = 'admin@gmail.com')
+       );
+
+--USUARIO SIN VALIDAR
+INSERT INTO USUARIOS (
+    ID_PERFIL,
+    ID_INSTITUCION,
+    CEDULA,
+    NOMBRE,
+    NOMBRE2,
+    APELLIDO,
+    APELLIDO2,
+    NOM_USUARIO,
+    FEC_NAC,
+    EMAIL,
+    CONTRASENIA,
+    ESTADO
+)
+VALUES (
+           (SELECT PERFILES.ID_Perfil FROM PERFILES WHERE Nom_Perfil = 'INGENIERO BIOMEDICO'),
+           (SELECT INSTITUCIONES.ID_Institucion FROM INSTITUCIONES WHERE Nom_Institucion = 'Centro Hospitalario Norte'),
+           '5334567-8',
+           'Ricardo',
+           'Samuel',
+           'Barzobia',
+           'Rodriguez',
+           'ricardo.barboza',
+           TO_DATE('2001-11-20', 'YYYY-MM-DD'),
+           'ricardo@gmail.com',
+           'Ricardo123!',
+           'SINVALIDAR'
+       );
+INSERT INTO TELEFONOS_USUARIOS(Telefono, ID_Usuario)
+         VALUES (
+                    '4441122555',
+                    (SELECT ID_USUARIO FROM USUARIOS WHERE Email = 'ricardo@gmail.com')
+                );
+
+INSERT INTO USUARIOS (
+    ID_PERFIL,
+    ID_INSTITUCION,
+    CEDULA,
+    NOMBRE,
+    NOMBRE2,
+    APELLIDO,
+    APELLIDO2,
+    NOM_USUARIO,
+    FEC_NAC,
+    EMAIL,
+    CONTRASENIA,
+    ESTADO
+)
+VALUES (
+           (SELECT PERFILES.ID_Perfil FROM PERFILES WHERE Nom_Perfil = 'TECNICO'),
+           (SELECT INSTITUCIONES.ID_Institucion FROM INSTITUCIONES WHERE Nom_Institucion = 'Centro Hospitalario Norte'),
+           '4863597-4',
+           'Mauricio',
+           'Nicolas',
+           'Peña',
+           'Fagundez',
+           'mauricio.pena',
+           TO_DATE('1999-01-15', 'YYYY-MM-DD'),
+           'mauricio@gmail.com',
+           'Mauricio123!',
+           'ACTIVO'
+       );
+INSERT INTO TELEFONOS_USUARIOS(Telefono, ID_Usuario)
+VALUES (
+           '333777555',
+           (SELECT ID_USUARIO FROM USUARIOS WHERE Email = 'mauricio@gmail.com')
+       );
+
+--USUARIO ELIMINADO
+INSERT INTO USUARIOS (
+    ID_PERFIL,
+    ID_INSTITUCION,
+    CEDULA,
+    NOMBRE,
+    NOMBRE2,
+    APELLIDO,
+    APELLIDO2,
+    NOM_USUARIO,
+    FEC_NAC,
+    EMAIL,
+    CONTRASENIA,
+    ESTADO
+)
+VALUES (
+           (SELECT PERFILES.ID_Perfil FROM PERFILES WHERE Nom_Perfil = 'INGENIERO BIOMEDICO'),
+           (SELECT INSTITUCIONES.ID_Institucion FROM INSTITUCIONES WHERE Nom_Institucion = 'Centro Hospitalario Norte'),
+           '6337867-8',
+           'Lucia',
+           'Barbara',
+           'Hernandez',
+           'Capelleti',
+           'lucia.hernandez',
+           TO_DATE('2000-11-20', 'YYYY-MM-DD'),
+           'lucia@gmail.com',
+           'Lucia123!',
+           'ELIMINADO'
+       );
+INSERT INTO TELEFONOS_USUARIOS(Telefono, ID_Usuario)
+VALUES (
+           '888666555',
+           (SELECT ID_USUARIO FROM USUARIOS WHERE Email = 'lucia@gmail.com')
+       );
+
+--USUARIO ACTIVO
+INSERT INTO USUARIOS (
+    ID_PERFIL,
+    ID_INSTITUCION,
+    CEDULA,
+    NOMBRE,
+    NOMBRE2,
+    APELLIDO,
+    APELLIDO2,
+    NOM_USUARIO,
+    FEC_NAC,
+    EMAIL,
+    CONTRASENIA,
+    ESTADO
+)
+VALUES (
+           (SELECT PERFILES.ID_Perfil FROM PERFILES WHERE Nom_Perfil = 'TECNOLOGO'),
+           (SELECT INSTITUCIONES.ID_Institucion FROM INSTITUCIONES WHERE Nom_Institucion = 'Centro Hospitalario Norte'),
+           '7337867-8',
+           'Carolina',
+           'Micaela',
+           'Schezuqui',
+           'Collazo',
+           'carolina.chezuqui',
+           TO_DATE('2002-03-12', 'YYYY-MM-DD'),
+           'carolina@gmail.com',
+           'Carolina12345!',
+           'ACTIVO'
+       );
+INSERT INTO TELEFONOS_USUARIOS(Telefono, ID_Usuario)
+VALUES (
+           '888333444',
+           (SELECT ID_USUARIO FROM USUARIOS WHERE Email = 'carolina@gmail.com')
+       );
+
+------------MARCAS
+--ACTIVO
+INSERT INTO MARCAS(NOM_MARCA, ESTADO) VALUES ('3B SCIENTIFICS', 'ACTIVO');
+--ACTIVO
+INSERT INTO MARCAS(NOM_MARCA, ESTADO) VALUES ('3M', 'ACTIVO');
+--ACTIVO
+INSERT INTO MARCAS(NOM_MARCA, ESTADO) VALUES ('AMCOR', 'ACTIVO');
+--ELIMINADO
+INSERT INTO MARCAS(NOM_MARCA, ESTADO) VALUES ('BBraun', 'ELIMINADO');
+
+------------MODELOS
+--ACTIVO
+INSERT INTO MODELOS(ID_MARCA, NOM_MODELO,ESTADO)
+VALUES (
+         (SELECT MARCAS.ID_Marca FROM MARCAS WHERE NOM_MARCA = '3B SCIENTIFICS'),
+         'Modelo3B',
+         'ACTIVO'
+);
+--ACTIVO
+INSERT INTO MODELOS(ID_MARCA, NOM_MODELO,ESTADO)
+VALUES (
+           (SELECT MARCAS.ID_Marca FROM MARCAS WHERE NOM_MARCA = '3M'),
+           'Modelo3M',
+           'ACTIVO'
+       );
+--ACTIVO
+INSERT INTO MODELOS(ID_MARCA, NOM_MODELO,ESTADO)
+VALUES (
+           (SELECT MARCAS.ID_Marca FROM MARCAS WHERE NOM_MARCA = 'AMCOR'),
+           'ModeloAMCOR',
+           'ACTIVO'
+       );
+--ELIMINADO
+INSERT INTO MODELOS(ID_MARCA, NOM_MODELO,ESTADO)
+VALUES (
+           (SELECT MARCAS.ID_Marca FROM MARCAS WHERE NOM_MARCA = 'BBraun'),
+           'ModeloBBraun',
+           'ELIMINADO'
+       );
+
+------------UBICACIONES
+
+INSERT INTO UBICACIONES(
+                        ID_INSTITUCION,
+                        ID_SECTOR,
+                        NOM_UBICACION,
+                        NUMERO,
+                        PISO,
+                        CAMA
+                        )
+VALUES (
+       (SELECT ID_INSTITUCION FROM INSTITUCIONES WHERE Nom_Institucion = 'Centro Hospitalario Norte'),
+       (SELECT ID_SECTOR FROM SECTORES WHERE Nombre = UPPER('Policlinico')),
+        'Sector 1',
+        1,
+        1,
+        1
+       );
+
+INSERT INTO UBICACIONES(
+    ID_INSTITUCION,
+    ID_SECTOR,
+    NOM_UBICACION,
+    NUMERO,
+    PISO,
+    CAMA
+)
+VALUES (
+           (SELECT ID_INSTITUCION FROM INSTITUCIONES WHERE Nom_Institucion = 'Centro Hospitalario Norte'),
+           (SELECT ID_SECTOR FROM SECTORES WHERE Nombre = UPPER('Internacion')),
+           'Sector 3',
+           2,
+           2,
+           5
+       );
+
+INSERT INTO UBICACIONES(
+    ID_INSTITUCION,
+    ID_SECTOR,
+    NOM_UBICACION,
+    NUMERO,
+    PISO,
+    CAMA
+)
+VALUES (
+           (SELECT ID_INSTITUCION FROM INSTITUCIONES WHERE Nom_Institucion = 'Centro Hospitalario Norte'),
+           (SELECT ID_SECTOR FROM SECTORES WHERE Nombre = UPPER('CTI')),
+           'Sector 10',
+           20,
+           3,
+           20
+       );
+
+------------PROVEEDORES
+--ACTIVO
+INSERT INTO PROVEEDORES(
+    NOM_PROVEEDOR,
+    EMAIL,
+    ESTADO,
+    SITIO
+) VALUES (
+             'Techhero',
+             'proveedor1@gmail.com',
+             'ACTIVO',
+             'www.proveedor1.com'
+         );
+INSERT INTO TELEFONOS_PROVEEDOR(Telefono, ID_PROVEEDOR)
+VALUES (
+           '778584589',
+           (SELECT PROVEEDORES.ID_Proveedor FROM PROVEEDORES WHERE Email = 'proveedor1@gmail.com')
+       );
+INSERT INTO TELEFONOS_PROVEEDOR(Telefono, ID_PROVEEDOR)
+VALUES (
+           '887585689',
+           (SELECT PROVEEDORES.ID_Proveedor FROM PROVEEDORES WHERE Email = 'proveedor1@gmail.com')
+       );
+
+--ACTIVO
+INSERT INTO PROVEEDORES(
+                        NOM_PROVEEDOR,
+                        EMAIL,
+                        ESTADO,
+                        SITIO
+) VALUES (
+        'Proveedor2',
+        'proveedro2@gmail.com',
+        'ACTIVO',
+        'www.proveedor2.com'
+);
+INSERT INTO TELEFONOS_PROVEEDOR(Telefono, ID_PROVEEDOR)
+VALUES (
+           '777584599',
+           (SELECT PROVEEDORES.ID_Proveedor FROM PROVEEDORES WHERE Email = 'proveedro2@gmail.com')
+       );
+INSERT INTO TELEFONOS_PROVEEDOR(Telefono, ID_PROVEEDOR)
+VALUES (
+           '888585699',
+           (SELECT PROVEEDORES.ID_Proveedor FROM PROVEEDORES WHERE Email = 'proveedro2@gmail.com')
+       );
+
+--ELIMINADO
+INSERT INTO PROVEEDORES(
+    NOM_PROVEEDOR,
+    EMAIL,
+    ESTADO,
+    SITIO
+) VALUES (
+             'Proveedor3',
+             'proveedor3@gmail.com',
+             'ELIMINADO',
+             'www.proveedor3.com'
+         );
+INSERT INTO TELEFONOS_PROVEEDOR(Telefono, ID_PROVEEDOR)
+VALUES (
+           '333582999',
+           (SELECT PROVEEDORES.ID_Proveedor FROM PROVEEDORES WHERE Email = 'proveedor3@gmail.com')
+       );
+INSERT INTO TELEFONOS_PROVEEDOR(Telefono, ID_PROVEEDOR)
+VALUES (
+           '111582999',
+           (SELECT PROVEEDORES.ID_Proveedor FROM PROVEEDORES WHERE Email = 'proveedor3@gmail.com')
+       );
+commit;
+
+--EQUIPOS-----------------------------------
+
+INSERT
+
+/*
+
+DECLARE
+    l_sql VARCHAR2(200);
+BEGIN
+    -- Deshabilitar restricciones de clave externa
+    FOR c IN (SELECT constraint_name, table_name
+              FROM all_constraints
+              WHERE constraint_type = 'R'
+                AND owner = 'USUARIOPDT')
+        LOOP
+            l_sql := 'ALTER TABLE ' || c.table_name || ' DISABLE CONSTRAINT ' || c.constraint_name;
+            EXECUTE IMMEDIATE l_sql;
+        END LOOP;
+
+    -- Eliminar registros de todas las tablas
+    FOR t IN (SELECT table_name FROM all_tables WHERE owner = 'USUARIOPDT') LOOP
+            l_sql := 'DELETE FROM ' || t.table_name;
+            EXECUTE IMMEDIATE l_sql;
+        END LOOP;
+
+    -- Habilitar restricciones de clave externa
+    FOR c IN (SELECT constraint_name, table_name
+              FROM all_constraints
+              WHERE constraint_type = 'R'
+                AND owner = 'USUARIOPDT')
+        LOOP
+            l_sql := 'ALTER TABLE ' || c.table_name || ' ENABLE CONSTRAINT ' || c.constraint_name;
+            EXECUTE IMMEDIATE l_sql;
+        END LOOP;
+END;*/

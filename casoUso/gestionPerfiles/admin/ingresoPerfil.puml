@@ -1,0 +1,16 @@
+@startuml
+actor "Administrador/Auxiliar Administrativo" as Admin
+
+note left of Admin
+  El administrador necesita credenciales
+  para crear nuevos perfiles.
+end note
+
+Admin --> (Ingreso de Perfil)
+note right of (Ingreso de Perfil)
+  Se ingresan los
+  detalles de un
+  nuevo perfil.
+end note
+(Ingreso de Perfil) ..> (Listado de Perfiles) : <<include>>
+@enduml

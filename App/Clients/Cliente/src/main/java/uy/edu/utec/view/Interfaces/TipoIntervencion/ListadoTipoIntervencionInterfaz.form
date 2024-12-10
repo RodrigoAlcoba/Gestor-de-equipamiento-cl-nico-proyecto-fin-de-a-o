@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="uy.edu.utec.view.Interfaces.TipoIntervencion.ListadoTipoIntervencionInterfaz">
+  <grid id="27dc6" binding="panel" layout-manager="GridLayoutManager" row-count="8" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="361" y="122" width="846" height="548"/>
+    </constraints>
+    <properties>
+      <background color="-12562117"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="fd83b" layout-manager="GridLayoutManager" row-count="6" column-count="8" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="0" column="0" row-span="7" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-11179954"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="b9266" class="javax.swing.JButton" binding="buttonCancelar">
+            <constraints>
+              <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-12562117"/>
+              <foreground color="-1"/>
+              <text value="Cancelar"/>
+            </properties>
+          </component>
+          <component id="119ec" class="javax.swing.JButton" binding="buttonBuscar">
+            <constraints>
+              <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-12562117"/>
+              <foreground color="-1"/>
+              <text value="Buscar"/>
+            </properties>
+          </component>
+          <component id="7b380" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="3" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font name="Candara" size="28" style="0"/>
+              <foreground color="-1183274"/>
+              <text value="Listado Tipo de Intevención"/>
+            </properties>
+          </component>
+          <scrollpane id="9ed1c" binding="scrollPane">
+            <constraints>
+              <grid row="1" column="2" row-span="5" col-span="6" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <foreground color="-16777216"/>
+            </properties>
+            <border type="none" title=""/>
+            <children>
+              <component id="20982" class="javax.swing.JTable" binding="tableTipoIntervencion">
+                <constraints/>
+                <properties/>
+              </component>
+            </children>
+          </scrollpane>
+          <component id="e764d" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font size="14"/>
+              <text value="Estado"/>
+            </properties>
+          </component>
+          <component id="59fd3" class="javax.swing.JComboBox" binding="comboBoxEstado">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <model>
+                <item value="ACTIVO"/>
+                <item value="ELIMINADO"/>
+              </model>
+            </properties>
+          </component>
+          <component id="c127b" class="javax.swing.JRadioButton" binding="cbEstado">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-11179954"/>
+              <borderPainted value="true"/>
+              <foreground color="-7898767"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="e9bb8" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <font size="14"/>
+              <text value="Tipo Intervención"/>
+            </properties>
+          </component>
+          <component id="5969c" class="javax.swing.JRadioButton" binding="cbTipo">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-11179954"/>
+              <borderPainted value="true"/>
+              <foreground color="-7898767"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="d4f08" class="javax.swing.JComboBox" binding="cbTipoIntervencion">
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+          </component>
+          <vspacer id="85665">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+            </constraints>
+          </vspacer>
+          <component id="471f0" class="javax.swing.JButton" binding="limpiarButton" default-binding="true">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <background color="-12562117"/>
+              <foreground color="-1183274"/>
+              <text value="Limpiar"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

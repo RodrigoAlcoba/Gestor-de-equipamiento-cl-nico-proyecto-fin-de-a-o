@@ -1,0 +1,9 @@
+@startuml
+actor Usuario as actor1
+usecase Registro_Intervencion as UC1
+
+actor1 -> UC1
+
+note "Se muestra mensaje indicando el registro" as N1
+(UC1) .. N1
+@enduml

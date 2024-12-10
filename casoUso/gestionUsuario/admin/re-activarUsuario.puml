@@ -1,0 +1,16 @@
+@startuml
+actor "Administrador/Auxiliar Administrativo" as Admin
+note left of Admin
+  El administrador necesita credenciales
+  para acceder al listado.
+end note
+
+Admin --> (Re-activar Usuario)
+(Re-activar Usuario) ..> (Listado de Usuarios) : <<include>>
+(Re-activar Usuario) ..> (Baja de Usuarios) : <<include>>
+
+note right of (Re-activar Usuario)
+  Se re-activa un usuario antes
+  dado de baja lógica.
+end note
+@enduml

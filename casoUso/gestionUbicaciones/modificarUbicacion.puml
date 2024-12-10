@@ -1,0 +1,17 @@
+@startuml
+actor "Usuario" as U
+
+
+note left of U
+  El usuario necesita credenciales
+  para modificar ubicaciones.
+end note
+
+U --> (Modificar Ubicacion)
+
+note left of (Modificar Ubicacion)
+  Se modifican
+  los datos de una
+  ubicacion registrada.
+end note
+@enduml

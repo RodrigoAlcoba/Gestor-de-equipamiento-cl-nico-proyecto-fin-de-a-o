@@ -1,0 +1,12 @@
+@startuml
+actor Usuario as actor1
+usecase IngresoTipoDeIntervencion as UC1
+
+actor1 -> UC1
+
+note "El usuario necesita el acceso a la funcionalidad." as N2
+(actor1) .. N2
+
+note "Los datos de modificación tienen que ser válidos." as N3
+(UC1) .. N3
+@enduml

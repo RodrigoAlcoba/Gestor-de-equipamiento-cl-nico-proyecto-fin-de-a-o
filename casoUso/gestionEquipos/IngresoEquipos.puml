@@ -1,0 +1,12 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+  AuxAdmin --> (Ingresar Equipo)
+  IngBiomed --> (Ingresar Equipo)
+  Tecnologo --> (Ingresar Equipo)
+
+note "Se muestra un mensaje indicando que el equipo fue ingresado" as N2
+(Ingresar Equipo) .. N2
+
+@enduml
+

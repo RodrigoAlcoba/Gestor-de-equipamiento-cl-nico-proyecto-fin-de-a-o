@@ -1,0 +1,25 @@
+@startuml
+
+actor "Administrador/Auxiliar Administrativo" as Admin
+
+note left of Admin
+  El administrador necesita credenciales
+  para acceder al listado.
+end note
+
+Admin --> (Listado de Usuarios)
+
+note right of (Listado de Usuarios)
+  Se pueden aplicar distintos filtros
+  para buscar a los usuarios registrados.
+end note
+
+(Listado de Usuarios) --> (Filtrar por Nombres) : <<extend>>
+(Listado de Usuarios) --> (Filtrar por Apellidos) :<<extend>>
+(Listado de Usuarios) --> (Filtrar por Nombre de Usuario) : <<extend>>
+(Listado de Usuarios) --> (Filtrar por Email) : <<extend>>
+(Listado de Usuarios) --> (Filtrar por Tipo de Usuario) : <<extend>>
+(Listado de Usuarios) --> (Filtrar por Estado) : <<extend>>
+
+
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+actor Usuario as user2
+usecase TrabajoIntervencion as CU2
+usecase ReporteIntervencionPorFechas as CU3
+user2 -> CU2
+CU2-.> CU3 : <<include>>
+
+note "Se debe seleccionar una intervencion para registrar el seguimiento" as N1
+(CU3) .. N1
+
+@enduml

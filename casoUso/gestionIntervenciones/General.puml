@@ -1,0 +1,20 @@
+@startuml
+actor Usuario as user
+usecase Registro_Intervencion as CU1
+usecase TrabajoIntervencion as CU2
+usecase ReporteIntervencionPorFechas as CU3
+usecase ReportePorTipoDeIntervencion as CU4
+
+left to right direction
+
+user --> CU1
+user -> CU2
+user -> CU3
+user -> CU4
+CU2 -.> CU3 :<<include>>
+
+
+
+
+
+@enduml

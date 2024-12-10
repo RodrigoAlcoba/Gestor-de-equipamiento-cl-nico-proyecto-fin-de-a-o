@@ -1,0 +1,9 @@
+@startuml
+actor Usuario as actor1
+usecase ListadoTipoDeIntervencion as UC1
+
+actor1 -> UC1
+
+note "El usuario necesita el acceso a la funcionalidad." as N2
+(actor1) .. N2
+@enduml

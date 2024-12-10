@@ -1,0 +1,22 @@
+@startuml
+
+actor "Administrador/Auxiliar Administrativo" as Admin
+
+note left of Admin
+  El administrador necesita credenciales
+  para listar perfiles.
+end note
+
+Admin --> (Listado de Perfiles)
+
+(Listado de Perfiles) ..> (Filtrar por Nombres) : <<extend>>
+(Listado de Perfiles) ..> (Filtrar por Estado) : <<extend>>
+
+note left of (Listado de Perfiles)
+  Se pueden aplicar
+  distintos filtros
+  para buscar a los
+  perfiles registrados.
+end note
+
+@enduml

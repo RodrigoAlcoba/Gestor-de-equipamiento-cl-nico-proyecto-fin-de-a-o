@@ -1,0 +1,11 @@
+@startuml
+actor "Usuario" as U
+
+U --> (Login de usuario)
+
+note right of (Login de usuario)
+ El usuario debe
+ estar registrado
+ en el sistema.
+end note
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+  AuxAdmin --> (Bajar Equipo)
+  IngBiomed --> (Bajar Equipo)
+  Tecnologo --> (Bajar Equipo)
+
+  (Bajar Equipo) --> (Retornar a la pestaña Equipos): <<include>>
+
+note "Se genera una baja lógica del equipo" as N2
+(Bajar Equipo) .. N2
+
+@enduml

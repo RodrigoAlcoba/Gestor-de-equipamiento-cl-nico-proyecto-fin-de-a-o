@@ -1,0 +1,16 @@
+@startuml
+actor "Usuario" as U
+
+
+note left of U
+  El usuario necesita credenciales
+  para mover un equipo.
+end note
+
+U --> (Movimiento de equipo)
+
+note left of (Movimiento de equipo)
+  Se registra el movimiento
+  del equipo dentro de la institución
+end note
+@enduml

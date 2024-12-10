@@ -1,0 +1,19 @@
+@startuml
+actor "Administrador/Auxiliar Administrativo" as Admin
+
+
+note left of Admin
+  El administrador necesita credenciales
+  para modificar perfiles.
+end note
+
+Admin --> (Modificar Perfil)
+(Modificar Perfil) ..> (Listado de Perfiles) : <<include>>
+
+note left of (Modificar Perfil)
+  Se modifican
+  los datos de un
+  perfil registrado.
+end note
+
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+
+actor "Usuario" as U
+
+U --> (Modificar Datos Propios)
+(Modificar Datos Propios) ..> (Login Usuario) : <<include>>
+note right of (Modificar Datos Propios)
+ No se permite
+ la modificación
+ del nombre.
+end note
+
+@enduml
+
+
+

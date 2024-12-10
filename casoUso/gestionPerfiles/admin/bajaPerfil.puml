@@ -1,0 +1,18 @@
+@startuml
+actor "Administrador/Auxiliar Administrativo" as Admin
+
+
+note left of Admin
+  El administrador necesita credenciales
+  para borrar perfiles.
+end note
+
+Admin --> (Baja de Perfil)
+(Baja de Perfil) ..> (Listado de Perfiles) : <<include>>
+
+
+note left of (Baja de Perfil)
+  Se elimina
+  lógicamente al perfil.
+end note
+@enduml

@@ -1,0 +1,11 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+  AuxAdmin --> (Modifica Equipo)
+  IngBiomed --> (Modifica Equipo)
+  Tecnologo --> (Modifica Equipo)
+
+note "Se muestra un mensaje indicando que el equipo fue modificado" as N2
+(Modifica Equipo) .. N2
+
+@enduml

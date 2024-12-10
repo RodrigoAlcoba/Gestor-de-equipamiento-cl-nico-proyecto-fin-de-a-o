@@ -1,0 +1,20 @@
+@startuml
+actor "Usuario" as U
+
+note left: El usuario necesita no estar registrado en el sistema.
+U --> (Registrar Usuario)
+
+note right of (Registrar Usuario)
+  Se muestra un mensaje
+  que indica que su
+  solicitud será
+  revisada antes de ser activa.
+end note
+
+(Registrar Usuario) ..> (Listado Usuario) : <<include>>
+note right of (Listado Usuario)
+ Se agrega al usuario
+ ingresado en el listado.
+ end note
+
+@enduml

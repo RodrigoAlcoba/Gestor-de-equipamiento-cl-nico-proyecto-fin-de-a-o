@@ -1,0 +1,15 @@
+@startuml
+actor "Administrador/Auxiliar Administrativo" as Admin
+note left of Admin
+  El administrador necesita credenciales
+  para eliminar un usuario.
+end note
+
+Admin --> (Baja de Usuario)
+(Baja de Usuario) ..> (Listado de Usuarios) : <<include>>
+
+note left of (Baja de Usuario)
+  Se elimina lógicamente
+  al usuario.
+end note
+@enduml

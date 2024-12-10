@@ -1,0 +1,19 @@
+@startuml
+actor "Administrador/Auxiliar Administrativo" as Admin
+
+
+note left of Admin
+  El administrador necesita credenciales
+  para re-activar perfiles.
+end note
+
+Admin --> (Re-activar Perfil)
+(Re-activar Perfil) ..> (Listado de Perfiles) : <<include>>
+(Re-activar Perfil) ..> (Baja de Perfiles) : <<include>>
+
+note right of (Re-activar Perfil)
+  Se re-activa un
+  perfil antes dado
+  de baja lógica.
+end note
+@enduml

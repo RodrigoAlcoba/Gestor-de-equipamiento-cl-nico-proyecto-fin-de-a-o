@@ -1,0 +1,8 @@
+@startuml
+actor usuario as user
+usecase ReportePorTipoDeIntervencion as CU4
+
+note "Se muestra cantidad de interacciones por tipo de interacción" as N1
+(CU4) .. N1
+user -> CU4
+@enduml

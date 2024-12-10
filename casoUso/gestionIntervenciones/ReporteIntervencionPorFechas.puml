@@ -1,0 +1,11 @@
+@startuml
+actor Usuario as user3
+usecase ReporteIntervencionPorFechas as CU3
+
+user3 -> CU3
+
+note "Se muestra listado de intervenciones dentro del rango de fechas" as N1
+(CU3) .. N1
+
+
+@enduml

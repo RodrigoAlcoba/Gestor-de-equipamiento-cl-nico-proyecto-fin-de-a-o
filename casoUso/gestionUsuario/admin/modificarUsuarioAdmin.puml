@@ -1,0 +1,19 @@
+@startuml
+actor "Administrador/Auxiliar Administrativo" as Admin
+
+Admin --> (Modificar Usuario)
+
+note left of Admin
+  El administrador necesita credenciales
+  para modificar datos.
+end note
+
+(Modificar Usuario) ..> (Listado de Usuarios) : <<include>>
+
+note left of (Modificar Usuario)
+  Se modifican los datos de un
+  usuario registrado,
+  excepto la modificación
+  del nombre ni de la contraseña.
+end note
+@enduml

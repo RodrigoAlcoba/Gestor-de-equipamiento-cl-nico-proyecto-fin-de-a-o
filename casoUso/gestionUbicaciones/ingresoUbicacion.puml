@@ -1,0 +1,15 @@
+@startuml
+actor "Usuario" as U
+
+note left of U
+  El usuario necesita credenciales
+  para ingresar una nueva ubicación.
+end note
+
+U --> (Ingreso de Ubicacion)
+note right of (Ingreso de Ubicacion)
+  Se ingresan los
+  detalles de una
+  nueva Ubicación.
+end note
+@enduml

@@ -1,0 +1,3 @@
+CREATE USER usuariopdt IDENTIFIED BY usuariopdt;
+GRANT CONNECT, RESOURCE, DBA TO usuariopdt;
+GRANT CREATE SESSION TO usuariopdt;

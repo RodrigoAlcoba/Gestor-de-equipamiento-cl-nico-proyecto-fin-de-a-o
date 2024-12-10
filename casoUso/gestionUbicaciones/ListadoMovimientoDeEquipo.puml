@@ -1,0 +1,23 @@
+@startuml
+actor "Usuario" as U
+
+note left of U
+    El usuario necesita credenciales
+    para realizar un listado de movimiento de quipos.
+end note
+
+U --> (Listado de Movimientos De Equipos)
+
+note right of (Listado de Movimientos De Equipos)
+  Se pueden aplicar distintos filtros
+  para buscar a los movimientos de equipos.
+end note
+
+(Listado de Movimientos De Equipos) --> (Filtrar por Equipo) : <<extend>>
+(Listado de Movimientos De Equipos) --> (Filtrar por Identificador) :<<extend>>
+(Listado de Movimientos De Equipos) --> (Filtrar por Institución) : <<extend>>
+(Listado de Movimientos De Equipos) --> (Filtrar por Sector) : <<extend>>
+(Listado de Movimientos De Equipos) --> (Filtrar por Usuario) : <<extend>>
+(Listado de Movimientos De Equipos) --> (Filtrar por Fecha desde) : <<extend>>
+(Listado de Movimientos De Equipos) --> (Filtrar por Fecha hasta) : <<extend>>
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+
+  AuxAdmin --> (Reportan Equipo)
+  IngBiomed --> (Reportan Equipo)
+  Tecnologo --> (Reportan Equipo)
+
+  (Reportan Equipo) --> (Se muestra listado de Equipos): <<include>>
+
+@enduml

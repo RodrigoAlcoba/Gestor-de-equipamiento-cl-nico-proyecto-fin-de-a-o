@@ -1,0 +1,16 @@
+@startuml
+actor "Usuario" as U
+
+
+note left of U
+  El usuario necesita credenciales
+  para borrar ubicaciones.
+end note
+
+U --> (Baja de Ubicacion)
+
+note left of (Baja de Ubicacion)
+  Se elimina
+  lógicamente la ubicacion.
+end note
+@enduml
